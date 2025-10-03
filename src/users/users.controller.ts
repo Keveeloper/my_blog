@@ -1,67 +1,39 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
-import { CreateUserDto } from './users.dto';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UserResponseDto } from './dtos/user-response.dto';
+import { User } from './entities/user.entity';
 
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
+@SerializeOptions({
+    type: UserResponseDto,
+})
 export class UsersController {
-  private users: User[] = [
-    { id: '1', name: 'John Doe', email: 'pepitoperez@gmail.com' },
-    { id: '2', name: 'Jane Smith', email: 'pepitoperez@gmail.com' },
-    { id: '3', name: 'Alice Johnson', email: 'pepitoperez@gmail.com' },
-  ];
+  constructor(private userService: UsersService) {}
 
-  // Get list of users
   @Get()
-  getUsers(): User[] {
-    return this.users;
+  getUsers() {
+    return this.userService.getAllUsers();
   }
 
-  // Get user by ID
   @Get(':id')
-  getUserById(@Param('id') id: string): User | NotFoundException {
-    const user = this.users.find((user) => user.id === id);
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-    return user;
+  getUserById(@Param('id') id: string) {
+    return this.userService.getUserById(id);
   }
 
-  // Create user
   @Post()
-  createUser(@Body() body: CreateUserDto): User | { message: string } {
-    const exists = this.users.find((user) => user.id === body.id);
-    if (exists) {
-      return { message: 'User with this ID already exists' };
-    }
-    this.users.push(body);
-    return body;
+  createUser(@Body() body: CreateUserDto) {
+    return this.userService.createUser(body);
   }
 
-  //Update user by ID
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() body: User): User | NotFoundException {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-    this.users[userIndex] = { ...this.users[userIndex], ...body };
-    return this.users[userIndex];
+  updateUser(@Param('id') id: string, @Body() body: User) {
+    return this.userService.updateUser(id, body);
   }
 
-  // Delete user by ID
   @Delete(':id')
-  deleteUser(@Param('id') id: string): NotFoundException | { message: string } {
-    const initialLength = this.users.length;
-    this.users = this.users.filter((user) => user.id !== id);
-    if (initialLength === this.users.length) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    } else {
-      return { message: 'User deleted successfully' };
-    }
+  deleteUser(@Param('id') id: string) {
+    return this.userService.deleteUser(id);
   }
 }
