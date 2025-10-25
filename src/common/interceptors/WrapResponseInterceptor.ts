@@ -15,6 +15,7 @@ export class WrapResponseInterceptor implements NestInterceptor {
           return { data: null };
         }
 
+        //Si es un array, lo envolvemos en un objeto con la clave 'data'.
         if (Array.isArray(data)) {
           return { data: data };
         }
