@@ -12,7 +12,6 @@ export class UsersService {
 
   async getAllUsers(): Promise<User[]> {
     const users = await this.userRepository.find({ relations: ['profile'] });
-    console.log('Fetched users:', users);
     return users;
   }
 
