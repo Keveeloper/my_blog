@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FirebaseModule } from './firebase/firebase.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { FirebaseModule } from './firebase/firebase.module';
       }),
     }),
     UsersModule,
-    FirebaseModule
+    FirebaseModule,
+    AuthModule
   ],
 })
 export class AppModule {}
