@@ -47,9 +47,6 @@ export class AuthController {
           avatar: picture || null,
       };
 
-      console.log('FirebaseUserData: ', firebaseUserData);
-
-
       // 3. Encontrar o crear el usuario en la base de datos PostgreSQL
       // El UsersService se encarga de la lógica de persistencia.
       // const user = await this.usersService.findOrCreateUser(firebaseUserData);
