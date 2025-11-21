@@ -9,6 +9,9 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ type: 'varchar', unique: true, name: 'google_id', nullable: true })
+  googleId: string;
+
   @OneToOne(() => Profile, { cascade: true, nullable: false})
   @JoinColumn({ name: 'profile_id' })
   profile: Profile;
@@ -17,7 +20,7 @@ export class User {
   email: string;
 
   @Exclude()
-  @Column()
+  @Column({type: 'varchar', length: 255, name: 'password', nullable: true})
   password: string;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP', name: 'created_at' })

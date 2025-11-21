@@ -19,6 +19,28 @@ export class UsersService {
       return await this.findUserById(id);
   }
 
+  async findOrCreate(firebaseUser: CreateUserDto): Promise<User> {
+    const existingUser = await this.userRepository.findOne({
+      where: { email: firebaseUser.email }
+    });
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    const newUser = this.userRepository.create({
+      googleId: firebaseUser.uid,
+      email: firebaseUser.email,
+      profile: {
+        firstName: firebaseUser.profile.firstName,
+        lastName: firebaseUser.profile.lastName,
+        avatar: firebaseUser.profile.avatar,
+      }
+    });
+
+    return await this.userRepository.save(newUser);
+  }
+
   async createUser(body: CreateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({ where: { email: body.email } });
     if (user) {
