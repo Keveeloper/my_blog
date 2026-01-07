@@ -26,13 +26,19 @@ export class AuthController {
     }
 
     const firebaseIdToken = authHeader.split(' ')[1];
+    console.log('firebaseIdToken: ', firebaseIdToken);
+     
 
     try {
       // 2. Verificar el Token de ID de Firebase
-      const decodedToken = await this.firebaseAdmin.auth().verifyIdToken(firebaseIdToken);
+      const decodedToken = await this.firebaseAdmin.auth().verifyIdToken(firebaseIdToken);      
+      console.log('decodedToken: ', decodedToken);
 
       const { uid, email, name, picture } = decodedToken;
+      console.log(uid, email, name, picture);
+      
       const [firstName, lastName] = name ? name.split(' ') : ['Usuario', 'Google'];
+      console.log(firstName, lastName);
 
       const userResponse = await this.usersService.findOrCreate({
         uid,
@@ -44,13 +50,17 @@ export class AuthController {
           avatar: picture,
         },
       });
+      console.log('userResponse', userResponse);
 
       const payload = {
         sub: userResponse.id,
         email: userResponse.email
       };
+      console.log('payload: ', payload);
 
       const nestJsToken = this.jwtService.sign(payload);
+      console.log('nestJsToken: ', nestJsToken);
+      
 
       return {
         userResponse,

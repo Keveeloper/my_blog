@@ -20,25 +20,35 @@ export class UsersService {
   }
 
   async findOrCreate(firebaseUser: CreateUserDto): Promise<User> {
-    const existingUser = await this.userRepository.findOne({
-      where: { email: firebaseUser.email }
-    });
-
-    if (existingUser) {
-      return existingUser;
-    }
-
-    const newUser = this.userRepository.create({
-      googleId: firebaseUser.uid,
-      email: firebaseUser.email,
-      profile: {
-        firstName: firebaseUser.profile.firstName,
-        lastName: firebaseUser.profile.lastName,
-        avatar: firebaseUser.profile.avatar,
+    try {
+      
+      console.log('firebaseUser: ', firebaseUser);
+      
+      const existingUser = await this.userRepository.findOne({
+        where: { email: firebaseUser.email }
+      });
+      console.log('existingUser', existingUser);
+      
+  
+      if (existingUser) {
+        return existingUser;
       }
-    });
-
-    return await this.userRepository.save(newUser);
+  
+      const newUser = this.userRepository.create({
+        googleId: firebaseUser.uid,
+        email: firebaseUser.email,
+        profile: {
+          firstName: firebaseUser.profile.firstName,
+          lastName: firebaseUser.profile.lastName,
+          avatar: firebaseUser.profile.avatar,
+        }
+      });
+  
+      return await this.userRepository.save(newUser);
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 
   async createUser(body: CreateUserDto): Promise<User> {
