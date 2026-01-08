@@ -20,15 +20,10 @@ export class UsersService {
   }
 
   async findOrCreate(firebaseUser: CreateUserDto): Promise<User> {
-    try {
-      
-      console.log('firebaseUser: ', firebaseUser);
-      
+    try {      
       const existingUser = await this.userRepository.findOne({
         where: { email: firebaseUser.email }
-      });
-      console.log('existingUser', existingUser);
-      
+      });      
   
       if (existingUser) {
         return existingUser;

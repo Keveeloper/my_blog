@@ -25,14 +25,11 @@ export class AuthController {
       throw new UnauthorizedException('Token de autorización no proporcionado o formato inválido.');
     }
 
-    const firebaseIdToken = authHeader.split(' ')[1];
-    console.log('firebaseIdToken: ', firebaseIdToken);
-     
+    const firebaseIdToken = authHeader.split(' ')[1];     
 
     try {
       // 2. Verificar el Token de ID de Firebase
-      const decodedToken = await this.firebaseAdmin.auth().verifyIdToken(firebaseIdToken);      
-      console.log('decodedToken: ', decodedToken);
+      const decodedToken = await this.firebaseAdmin.auth().verifyIdToken(firebaseIdToken);            
 
       const { uid, email, name, picture } = decodedToken;
       console.log(uid, email, name, picture);
@@ -49,8 +46,7 @@ export class AuthController {
           lastName: lastName || '',
           avatar: picture,
         },
-      });
-      console.log('userResponse', userResponse);
+      });      
 
       const payload = {
         sub: userResponse.id,
@@ -58,9 +54,7 @@ export class AuthController {
       };
       console.log('payload: ', payload);
 
-      const nestJsToken = this.jwtService.sign(payload);
-      console.log('nestJsToken: ', nestJsToken);
-      
+      const nestJsToken = this.jwtService.sign(payload);      
 
       return {
         userResponse,
